@@ -41,7 +41,8 @@ class Vocab(object):
     self._word_to_id = {}
     self._id_to_word = {}
     self._count = 0
-
+    # python3 version:
+    # change the following line function open(*,*) with 'open(vocab_file, 'r', encoding='utf-8')'
     with open(vocab_file, 'r') as vocab_f:
       for line in vocab_f:
         pieces = line.split()
@@ -185,14 +186,21 @@ def SnippetGen(text, start_tok, end_tok, inclusive=True):
     String snippets
   """
   cur = 0
+  # python3 version (uncomment following 2 lines):
+  # start_tok = start_tok.encode(encoding='utf-8')
+  # start_tok = start_tok.encode(encoding='utf-8')
   while True:
     try:
       start_p = text.index(start_tok, cur)
-      end_p = text.index(end_tok, start_p + 1)
+      end_p = text.index(start_tok, start_p + 1)
       cur = end_p + len(end_tok)
       if inclusive:
+        # python3 version;
+        # change the following line with 'yield text[start_p:cur].decode()'
         yield text[start_p:cur]
       else:
+        # python3 version;
+        # change the following line with 'yield text[start_p+len(start_tok):end_p].decode()'
         yield text[start_p+len(start_tok):end_p]
     except ValueError as e:
       raise StopIteration('no more snippets in text: %s' % e)
