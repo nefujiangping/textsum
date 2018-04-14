@@ -188,18 +188,18 @@ def SnippetGen(text, start_tok, end_tok, inclusive=True):
   cur = 0
   # python3 version (uncomment following 2 lines):
   # start_tok = start_tok.encode(encoding='utf-8')
-  # start_tok = start_tok.encode(encoding='utf-8')
+  # end_tok = end_tok.encode(encoding='utf-8')
   while True:
     try:
       start_p = text.index(start_tok, cur)
       end_p = text.index(start_tok, start_p + 1)
       cur = end_p + len(end_tok)
       if inclusive:
-        # python3 version;
+        # python3 version:
         # change the following line with 'yield text[start_p:cur].decode()'
         yield text[start_p:cur]
       else:
-        # python3 version;
+        # python3 version:
         # change the following line with 'yield text[start_p+len(start_tok):end_p].decode()'
         yield text[start_p+len(start_tok):end_p]
     except ValueError as e:
