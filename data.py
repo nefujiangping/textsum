@@ -22,7 +22,6 @@ import sys
 
 from tensorflow.core.example import example_pb2
 
-FLAGS = tf.app.flags.FLAGS
 
 # Special tokens
 PARAGRAPH_START = '<p>'
@@ -42,7 +41,7 @@ class Vocab(object):
     self._word_to_id = {}
     self._id_to_word = {}
     self._count = 0
-    # python3 version:
+     # python3 version:
     # change the following line function open(*,*) with 'open(vocab_file, 'r', encoding='utf-8')'
     with open(vocab_file, 'r') as vocab_f:
       for line in vocab_f:
@@ -56,7 +55,6 @@ class Vocab(object):
         self._id_to_word[self._count] = pieces[0]
         self._count += 1
         if self._count > max_size:
-
           break
 
   def CheckVocab(self, word):
@@ -188,14 +186,14 @@ def SnippetGen(text, start_tok, end_tok, inclusive=True):
   Yields:
     String snippets
   """
-  cur = 0
   # python3 version (uncomment following 2 lines):
   # start_tok = start_tok.encode(encoding='utf-8')
   # end_tok = end_tok.encode(encoding='utf-8')
+  cur = 0
   while True:
     try:
       start_p = text.index(start_tok, cur)
-      end_p = text.index(start_tok, start_p + 1)
+      end_p = text.index(end_tok, start_p + 1)
       cur = end_p + len(end_tok)
       if inclusive:
         # python3 version:

@@ -55,7 +55,7 @@ tf.app.flags.DEFINE_integer('max_article_sentences', 100,
 tf.app.flags.DEFINE_integer('max_abstract_sentences', 2,
                             'Max number of first sentences to use from the '
                             'abstract')
-tf.app.flags.DEFINE_integer('batch_size', 4,
+tf.app.flags.DEFINE_integer('batch_size', 32,
                             'batch_size.')
 
 tf.app.flags.DEFINE_integer('beam_size', 4,
@@ -67,9 +67,10 @@ tf.app.flags.DEFINE_bool('use_bucketing', False,
 tf.app.flags.DEFINE_bool('truncate_input', False,
                          'Truncate inputs that are too long. If False, '
                          'examples that are too long are discarded.')
-tf.app.flags.DEFINE_string('gpu_no', '', 'No.(s) of the gpu(s) to be used, e.g. 0,1')
+tf.app.flags.DEFINE_string('gpu_no', '0', 'No.(s) of the gpu(s) to be used, e.g. 0,1')
 tf.app.flags.DEFINE_integer('random_seed', 111, 'A seed value for randomness.')
 tf.app.flags.DEFINE_float('gpu_memory_fraction', 0.8, 'per_process_gpu_memory_fraction')
+
 
 def init_logging(log_file):
   """Init for logging
@@ -187,7 +188,7 @@ def _Eval(model, data_batcher, vocab=None):
 
 
 def main(unused_argv):
-  assert FLAGS.gpu_no != '', 'gpu_no must be assigned!'
+  assert FLAGS.gpu_no, 'gpu_no must be asigned!'
   os.environ["CUDA_VISIBLE_DEVICES"] = FLAGS.gpu_no
   os.environ['TF_CPP_MIN_LOG_LEVEL']='1'
 
@@ -199,6 +200,8 @@ def main(unused_argv):
   assert vocab.CheckVocab(data.UNKNOWN_TOKEN) >= 0
   assert vocab.CheckVocab(data.SENTENCE_START) > 0
   assert vocab.CheckVocab(data.SENTENCE_END) > 0
+
+
 
   batch_size = FLAGS.batch_size
   if FLAGS.mode == 'decode':
