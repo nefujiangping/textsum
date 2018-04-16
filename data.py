@@ -22,6 +22,8 @@ import sys
 
 from tensorflow.core.example import example_pb2
 
+import tensorflow as tf
+FLAGS = tf.app.flags.FLAGS
 
 # Special tokens
 PARAGRAPH_START = '<p>'
