@@ -24,6 +24,7 @@ Beyond."
 import os
 import sys
 import time
+import logging
 
 import data
 import tensorflow as tf
@@ -70,6 +71,20 @@ tf.app.flags.DEFINE_string('gpu_no', '', 'No.(s) of the gpu(s) to be used, e.g. 
 tf.app.flags.DEFINE_integer('random_seed', 111, 'A seed value for randomness.')
 tf.app.flags.DEFINE_float('gpu_memory_fraction', 0.8, 'per_process_gpu_memory_fraction')
 
+def init_logging(log_file):
+  """Init for logging
+  """
+  logging.basicConfig(
+                    level    = logging.DEBUG,
+                    format='%(asctime)s-%(levelname)s-%(message)s',
+                    datefmt  = '%y-%m-%d %H:%M',
+                    filename = log_file,
+                    filemode = 'w');
+  console = logging.StreamHandler()
+  console.setLevel(logging.INFO)
+  formatter = logging.Formatter('%(asctime)s-%(levelname)s-%(message)s')
+  console.setFormatter(formatter)
+  logging.getLogger('').addHandler(console)
 
 def _RunningAvgLoss(loss, running_avg_loss, summary_writer, step, decay=0.999):
   """Calculate the running average of losses."""
@@ -174,8 +189,11 @@ def _Eval(model, data_batcher, vocab=None):
 def main(unused_argv):
   assert FLAGS.gpu_no != '', 'gpu_no must be assigned!'
   os.environ["CUDA_VISIBLE_DEVICES"] = FLAGS.gpu_no
+  os.environ['TF_CPP_MIN_LOG_LEVEL']='1'
 
-  vocab = data.Vocab(FLAGS.vocab_path, 1000000)
+  init_logging(FLAGS.mode +'.log-' + time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
+
+  vocab = data.Vocab(FLAGS.vocab_path, 150000)
   # Check for presence of required special tokens.
   assert vocab.CheckVocab(data.PAD_TOKEN) > 0
   assert vocab.CheckVocab(data.UNKNOWN_TOKEN) >= 0

@@ -22,6 +22,7 @@ import sys
 
 from tensorflow.core.example import example_pb2
 
+FLAGS = tf.app.flags.FLAGS
 
 # Special tokens
 PARAGRAPH_START = '<p>'
@@ -94,12 +95,14 @@ def ExampleGen(data_path, num_epochs=None):
   If there are multiple files specified, they accessed in a random order.
   """
   epoch = 0
+  if FLAGS.mode == 'decode': num_epochs = 1
   while True:
     if num_epochs is not None and epoch >= num_epochs:
       break
     filelist = glob.glob(data_path)
     assert filelist, 'Empty filelist.'
-    random.shuffle(filelist)
+    if FLAGS.mode != 'decode':
+      random.shuffle(filelist)
     for f in filelist:
       reader = open(f, 'rb')
       while True:
