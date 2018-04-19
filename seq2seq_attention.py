@@ -67,7 +67,7 @@ tf.app.flags.DEFINE_bool('use_bucketing', False,
 tf.app.flags.DEFINE_bool('truncate_input', False,
                          'Truncate inputs that are too long. If False, '
                          'examples that are too long are discarded.')
-tf.app.flags.DEFINE_string('gpu_no', '0', 'No.(s) of the gpu(s) to be used, e.g. 0,1')
+tf.app.flags.DEFINE_string('gpu_no', '', 'No.(s) of the gpu(s) to be used, e.g. 0,1')
 tf.app.flags.DEFINE_integer('random_seed', 111, 'A seed value for randomness.')
 tf.app.flags.DEFINE_float('gpu_memory_fraction', 0.8, 'per_process_gpu_memory_fraction')
 
@@ -188,9 +188,9 @@ def _Eval(model, data_batcher, vocab=None):
 
 
 def main(unused_argv):
-  assert FLAGS.gpu_no, 'gpu_no must be asigned!'
+  assert FLAGS.gpu_no != '', 'gpu_no must be assigned!'
   os.environ["CUDA_VISIBLE_DEVICES"] = FLAGS.gpu_no
-  os.environ['TF_CPP_MIN_LOG_LEVEL']='1'
+  os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 
   init_logging(FLAGS.mode +'.log-' + time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
 
@@ -200,8 +200,6 @@ def main(unused_argv):
   assert vocab.CheckVocab(data.UNKNOWN_TOKEN) >= 0
   assert vocab.CheckVocab(data.SENTENCE_START) > 0
   assert vocab.CheckVocab(data.SENTENCE_END) > 0
-
-
 
   batch_size = FLAGS.batch_size
   if FLAGS.mode == 'decode':
